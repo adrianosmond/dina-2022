@@ -19,9 +19,6 @@
     "paths": {
       "assets/*": ["src/assets/*"],
       "components/*": ["src/components/*"],
-      "state/*": ["src/state/*"],
-      "types/*": ["src/types/*"],
-      "utils/*": ["src/utils/*"]
     },
     "types": ["vite-plugin-svgr/client"]
   },
