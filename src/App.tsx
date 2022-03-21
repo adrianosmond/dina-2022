@@ -1,15 +1,25 @@
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ReactComponent as CloseIcon } from 'assets/icons/close.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { ReactComponent as InboxIcon } from 'assets/icons/inbox.svg';
 import { ReactComponent as Logo } from 'assets/images/logo.svg';
 import EmptyInbox from 'components/EmptyInbox';
-import data, { Email } from './data/emails';
+import allEmails, { Email } from './data/emails';
 import './style/style.css';
 
+const getTime = () => {
+  const d = new Date();
+  return `${d.getHours().toString().padStart(2, '0')}:${d
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}`;
+};
+
+const isCustomEvent = (event: Event): event is CustomEvent => 'detail' in event;
+
 const App = () => {
-  const [emails, setEmails] = useState<Email[]>(data);
+  const [emails, setEmails] = useState<Email[]>([]);
   const [email, setEmail] = useState<Email | null>(null);
   const markAsRead = useCallback((id: number) => {
     setEmails((mails) =>
@@ -32,11 +42,47 @@ const App = () => {
 
   const openEmail = useCallback(
     (id) => {
-      markAsRead(id);
-      setEmail(emails.find((e) => e.id === id) || null);
+      const e = emails.find((em) => em.id === id);
+      if (e) {
+        setEmail(e);
+        if (!e.isRead) {
+          e.onOpened?.();
+          markAsRead(id);
+        }
+      } else {
+        setEmail(null);
+      }
     },
     [emails, markAsRead],
   );
+
+  const deliverEmail = useCallback((id: number) => {
+    const e = allEmails.find((em) => em.id === id);
+    if (e) {
+      setEmails((ems) => {
+        if (ems.find((em) => em.id === id)) {
+          return ems;
+        }
+        return [{ ...e, time: getTime() }, ...ems];
+      });
+      e.onDelivered?.();
+    }
+  }, []);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      deliverEmail(1);
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [deliverEmail]);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      if (isCustomEvent(e)) deliverEmail(e.detail);
+    };
+    window.addEventListener('mail-delivered', handler);
+    return () => window.removeEventListener('mail-delivered', handler);
+  }, [deliverEmail]);
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
