@@ -29,7 +29,7 @@ const emails: Email[] = [
   {
     id: 9,
     from: 'Ian Ince',
-    subject: 'That ought to wrap it up',
+    subject: 'This ought to wrap it up',
     time: '',
     isRead: false,
     content: <Ian />,
@@ -37,7 +37,7 @@ const emails: Email[] = [
   {
     id: 8,
     from: 'Harriet Hemsworth',
-    subject: 'A slightly longer email subject',
+    subject: 'Have a wonderful day',
     time: '',
     isRead: false,
     content: <Harriet />,
@@ -45,7 +45,7 @@ const emails: Email[] = [
   {
     id: 7,
     from: 'Gloria Greene',
-    subject: 'A slightly longer email subject',
+    subject: 'I wish I could be 35 again',
     time: '',
     isRead: false,
     content: <Gloria />,
@@ -57,7 +57,7 @@ const emails: Email[] = [
   {
     id: 6,
     from: 'Francis Fairbrace',
-    subject: 'A slightly longer email subject',
+    subject: 'Best wishes on your birthday',
     time: '',
     isRead: false,
     content: <Francis />,
@@ -68,7 +68,7 @@ const emails: Email[] = [
   {
     id: 5,
     from: 'Eddie Evans',
-    subject: 'A slightly longer email subject',
+    subject: 'Congratulations',
     time: '',
     isRead: false,
     content: <Eddie />,
@@ -79,7 +79,7 @@ const emails: Email[] = [
   {
     id: 4,
     from: 'Doris Dimbleby',
-    subject: 'A slightly longer email subject',
+    subject: 'Birthday greetings',
     time: '',
     isRead: false,
     content: <Doris />,

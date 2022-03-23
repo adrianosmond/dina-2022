@@ -2,8 +2,16 @@ import Email from 'components/Email';
 
 const Eddie = () => (
   <Email>
-    <h1>Something!</h1>
-    <p>A paragraph!</p>
+    <p>Hi there Dina!</p>
+    <p>
+      The position in which my email should be deleted is 1.5 times larger than
+      Francis'.
+    </p>
+    <p>
+      Best,
+      <br />
+      Eddie
+    </p>
   </Email>
 );
 

@@ -2,8 +2,13 @@ import Email from 'components/Email';
 
 const Bob = () => (
   <Email>
-    <h1>Second!!</h1>
-    <p>Another paragraph!</p>
+    <p>Dear Dina</p>
+    <p>The position in which my message should be deleted is a prime number.</p>
+    <p>
+      Yours,
+      <br />
+      Bob
+    </p>
   </Email>
 );
 

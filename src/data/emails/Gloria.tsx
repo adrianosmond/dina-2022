@@ -2,8 +2,16 @@ import Email from 'components/Email';
 
 const Gloria = () => (
   <Email>
-    <h1>Something!</h1>
-    <p>A paragraph!</p>
+    <p>Dear Dina</p>
+    <p>
+      The position in which Francis' email should be deleted is 1.5 times larger
+      than mine.
+    </p>
+    <p>
+      Yours etc.
+      <br />
+      Gloria
+    </p>
   </Email>
 );
 

@@ -2,8 +2,15 @@ import Email from 'components/Email';
 
 const Harriet = () => (
   <Email>
-    <h1>Something!</h1>
-    <p>A paragraph!</p>
+    <p>Dear Dina</p>
+    <p>
+      The position in which my email should be deleted is a multiple of Doris'.
+    </p>
+    <p>
+      Greetings,
+      <br />
+      Harriet
+    </p>
   </Email>
 );
 
