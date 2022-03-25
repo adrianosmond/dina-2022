@@ -84,6 +84,28 @@ const App = () => {
     return () => window.removeEventListener('mail-delivered', handler);
   }, [deliverEmail]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (email === null) return;
+      switch (e.key) {
+        case 'ArrowUp': {
+          if (email.id === emails.length) return;
+          openEmail(email.id + 1);
+          break;
+        }
+        case 'ArrowDown': {
+          if (email.id === 1) return;
+          openEmail(email.id - 1);
+          break;
+        }
+        default:
+          break;
+      }
+    };
+    window.addEventListener('keyup', handler);
+    return () => window.removeEventListener('keyup', handler);
+  }, [email, emails, openEmail]);
+
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <div className="w-48 py-4 flex justify-center">
@@ -115,7 +137,7 @@ const App = () => {
                         openEmail(mail.id);
                       }}
                       className={classNames({
-                        'flex gap-4 py-3 px-4 w-full border-b border-gray-200 hover:bg-blue-50 text-left':
+                        'flex gap-4 py-3 px-4 w-full border-b border-gray-200 hover:bg-blue-50 text-left outline-none':
                           true,
                         'font-semibold': !mail.isRead,
                         'bg-teal-600 hover:bg-teal-600 text-white':
