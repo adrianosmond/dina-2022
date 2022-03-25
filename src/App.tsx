@@ -21,6 +21,8 @@ const isCustomEvent = (event: Event): event is CustomEvent => 'detail' in event;
 const App = () => {
   const [emails, setEmails] = useState<Email[]>([]);
   const [email, setEmail] = useState<Email | null>(null);
+  const [deletedEmails, setDeletedEmails] = useState<Email[]>([]);
+
   const markAsRead = useCallback((id: number) => {
     setEmails((mails) =>
       mails.map((e) => {
@@ -35,13 +37,8 @@ const App = () => {
     );
   }, []);
 
-  const deleteEmail = useCallback((id: number) => {
-    setEmails((mails) => mails.filter((e) => e.id !== id));
-    setEmail(null);
-  }, []);
-
   const openEmail = useCallback(
-    (id) => {
+    (id: number) => {
       const e = emails.find((em) => em.id === id);
       if (e) {
         setEmail(e);
@@ -54,6 +51,40 @@ const App = () => {
       }
     },
     [emails, markAsRead],
+  );
+
+  const openPreviousEmail = useCallback(() => {
+    if (email === null) return;
+    if (emails.length === 1) {
+      openEmail(emails[0].id);
+      return;
+    }
+    const currentMailIndex = emails.findIndex((em) => em.id === email.id);
+    if (currentMailIndex === 0) return;
+    openEmail(emails[currentMailIndex - 1].id);
+  }, [email, emails, openEmail]);
+
+  const openNextEmail = useCallback(() => {
+    if (email === null) return;
+    if (emails.length === 1) {
+      openEmail(emails[0].id);
+      return;
+    }
+    const currentMailIndex = emails.findIndex((em) => em.id === email.id);
+    if (currentMailIndex === emails.length - 1) return;
+    openEmail(emails[currentMailIndex + 1].id);
+  }, [email, emails, openEmail]);
+
+  const deleteEmail = useCallback(
+    (id: number) => {
+      const currentMailIndex = emails.findIndex((em) => em.id === email?.id);
+      if (emails.length === 1) setEmail(null);
+      else if (currentMailIndex === 0) openNextEmail();
+      else openPreviousEmail();
+      setEmails((mails) => mails.filter((e) => e.id !== id));
+      if (email !== null) setDeletedEmails((d) => [...d, email]);
+    },
+    [email, emails, openNextEmail, openPreviousEmail],
   );
 
   const deliverEmail = useCallback((id: number) => {
@@ -86,16 +117,17 @@ const App = () => {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (email === null) return;
       switch (e.key) {
         case 'ArrowUp': {
-          if (email.id === emails.length) return;
-          openEmail(email.id + 1);
+          openPreviousEmail();
           break;
         }
         case 'ArrowDown': {
-          if (email.id === 1) return;
-          openEmail(email.id - 1);
+          openNextEmail();
+          break;
+        }
+        case 'Delete': {
+          if (email !== null) deleteEmail(email.id);
           break;
         }
         default:
@@ -104,7 +136,7 @@ const App = () => {
     };
     window.addEventListener('keyup', handler);
     return () => window.removeEventListener('keyup', handler);
-  }, [email, emails, openEmail]);
+  }, [email, deleteEmail, openPreviousEmail, openNextEmail]);
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
