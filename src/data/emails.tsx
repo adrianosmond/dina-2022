@@ -16,8 +16,6 @@ export type Email = {
   isRead: boolean;
   content: JSX.Element;
   onOpened?: () => void;
-  onDelivered?: () => void;
-  onDeleted?: () => void;
 };
 
 const deliverMail = (id: number) => {

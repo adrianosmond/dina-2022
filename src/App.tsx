@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ReactComponent as CloseIcon } from 'assets/icons/close.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { ReactComponent as InboxIcon } from 'assets/icons/inbox.svg';
@@ -22,6 +22,12 @@ const App = () => {
   const [emails, setEmails] = useState<Email[]>([]);
   const [email, setEmail] = useState<Email | null>(null);
   const [deletedEmails, setDeletedEmails] = useState<Email[]>([]);
+  const isSolved = useMemo(() => {
+    if (deletedEmails.length !== 9) return false;
+    return [1, 4, 9, 7, 2, 6, 3, 8, 5].every(
+      (val, idx) => deletedEmails[idx].id === val,
+    );
+  }, [deletedEmails]);
 
   const markAsRead = useCallback((id: number) => {
     setEmails((mails) =>
@@ -96,7 +102,6 @@ const App = () => {
         }
         return [{ ...e, time: getTime() }, ...ems];
       });
-      e.onDelivered?.();
     }
   }, []);
 
@@ -157,7 +162,7 @@ const App = () => {
               <span className="w-12">Time</span>
             </div>
             <ul
-              className="relative bg-white border border-gray-300 flex-grow overflow-y-scroll relative"
+              className="relative bg-white border border-gray-300 flex-grow overflow-y-scroll"
               onClick={() => setEmail(null)}
             >
               <div className="absolute inset-0">
@@ -196,9 +201,14 @@ const App = () => {
                   </li>
                 ))}
               </div>
-              {emails.length === 0 && (
+              {emails.length === 0 && !isSolved && (
                 <div className="absolute inset-0 flex justify-center items-center">
                   <EmptyInbox />
+                </div>
+              )}
+              {emails.length === 0 && isSolved && (
+                <div className="absolute inset-0 flex justify-center items-center text-5xl">
+                  🎉
                 </div>
               )}
             </ul>
