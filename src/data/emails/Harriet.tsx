@@ -1,3 +1,4 @@
+import i08 from 'assets/images/08.png';
 import Email from 'components/Email';
 
 const Harriet = () => (
@@ -10,6 +11,9 @@ const Harriet = () => (
       Greetings,
       <br />
       Harriet
+    </p>
+    <p>
+      <img src={i08} alt="" />
     </p>
   </Email>
 );

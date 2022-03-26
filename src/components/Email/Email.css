@@ -11,3 +11,8 @@
 .email p:not(:last-child) {
   margin-bottom: 1rem;
 }
+
+.email a {
+  color: dodgerblue;
+  text-decoration: underline;
+}

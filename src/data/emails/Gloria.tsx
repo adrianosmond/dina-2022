@@ -1,3 +1,4 @@
+import i07 from 'assets/images/07.png';
 import Email from 'components/Email';
 
 const Gloria = () => (
@@ -11,6 +12,9 @@ const Gloria = () => (
       Yours etc.
       <br />
       Gloria
+    </p>
+    <p>
+      <img src={i07} alt="" />
     </p>
   </Email>
 );

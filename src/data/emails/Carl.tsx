@@ -1,3 +1,4 @@
+import i03 from 'assets/images/03.png';
 import schematic from 'assets/images/schematic.png';
 import Email from 'components/Email';
 
@@ -19,6 +20,9 @@ const Carl = () => (
       Yours sincerely,
       <br />
       Carl
+    </p>
+    <p>
+      <img src={i03} alt="" />
     </p>
   </Email>
 );

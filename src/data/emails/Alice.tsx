@@ -1,3 +1,4 @@
+import i01 from 'assets/images/01.png';
 import Email from 'components/Email';
 
 const Alice = () => (
@@ -25,6 +26,9 @@ const Alice = () => (
       All the best!
       <br />
       Alice
+    </p>
+    <p>
+      <img src={i01} alt="" />
     </p>
   </Email>
 );
