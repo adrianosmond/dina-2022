@@ -1,10 +1,12 @@
 import classNames from 'classnames';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import Confetti from 'react-confetti';
 import { ReactComponent as CloseIcon } from 'assets/icons/close.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { ReactComponent as InboxIcon } from 'assets/icons/inbox.svg';
 import { ReactComponent as Logo } from 'assets/images/logo.svg';
 import EmptyInbox from 'components/EmptyInbox';
+import Keycode from 'components/Keycode';
 import allEmails, { Email } from './data/emails';
 import './style/style.css';
 
@@ -22,12 +24,29 @@ const App = () => {
   const [emails, setEmails] = useState<Email[]>([]);
   const [email, setEmail] = useState<Email | null>(null);
   const [deletedEmails, setDeletedEmails] = useState<Email[]>([]);
+  const [digits, setDigits] = useState<number[]>([0, 0, 0]);
   const isSolved = useMemo(() => {
     if (deletedEmails.length !== 9) return false;
     return [1, 4, 9, 7, 2, 6, 3, 8, 5].every(
       (val, idx) => deletedEmails[idx].id === val,
     );
   }, [deletedEmails]);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
+  const updateDigit = useCallback((value: number, idx: number) => {
+    setDigits((s) => {
+      const clone = [...s];
+      clone[idx] = value;
+      return clone;
+    });
+  }, []);
+
+  const checkSolution = () => {
+    const unlocked = [6, 5, 1].every((d, idx) => digits[idx] === d);
+    if (unlocked) {
+      setIsUnlocked(true);
+    }
+  };
 
   const markAsRead = useCallback((id: number) => {
     setEmails((mails) =>
@@ -161,57 +180,82 @@ const App = () => {
               <span className="flex-grow">Subject</span>
               <span className="w-12">Time</span>
             </div>
-            <ul
+            <div
               className="relative bg-white border border-gray-300 flex-grow overflow-y-scroll"
               onClick={() => setEmail(null)}
             >
-              <div className="absolute inset-0">
-                {emails.map((mail, idx) => (
-                  <li key={mail.id}>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openEmail(mail.id);
-                      }}
-                      className={classNames({
-                        'flex gap-4 py-3 px-4 w-full border-b border-gray-200 hover:bg-blue-50 text-left outline-none':
-                          true,
-                        'font-semibold': !mail.isRead,
-                        'bg-teal-600 hover:bg-teal-600 text-white':
-                          mail.id === email?.id,
-                        'bg-gray-50': mail.id !== email?.id && idx % 2 === 1,
-                      })}
-                    >
-                      <div className="w-40 h-6 relative">
-                        <span className="absolute inset-0 truncate">
-                          {mail.from}
-                        </span>
-                      </div>
-                      <div className="h-6 flex-grow relative">
-                        <span className="absolute inset-0 truncate">
-                          {mail.subject}
-                        </span>
-                      </div>
-                      <div className="w-12 h-6 relative">
-                        <span className="absolute inset-0 truncate">
-                          {mail.time}
-                        </span>
-                      </div>
-                    </button>
-                  </li>
-                ))}
-              </div>
-              {emails.length === 0 && !isSolved && (
+              {emails.length > 0 ? (
+                <ul className="absolute inset-0">
+                  {emails.map((mail, idx) => (
+                    <li key={mail.id}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openEmail(mail.id);
+                        }}
+                        className={classNames({
+                          'flex gap-4 py-3 px-4 w-full border-b border-gray-200 hover:bg-blue-50 text-left outline-none':
+                            true,
+                          'font-semibold': !mail.isRead,
+                          'bg-teal-600 hover:bg-teal-600 text-white':
+                            mail.id === email?.id,
+                          'bg-gray-50': mail.id !== email?.id && idx % 2 === 1,
+                        })}
+                      >
+                        <div className="w-40 h-6 relative">
+                          <span className="absolute inset-0 truncate">
+                            {mail.from}
+                          </span>
+                        </div>
+                        <div className="h-6 flex-grow relative">
+                          <span className="absolute inset-0 truncate">
+                            {mail.subject}
+                          </span>
+                        </div>
+                        <div className="w-12 h-6 relative">
+                          <span className="absolute inset-0 truncate">
+                            {mail.time}
+                          </span>
+                        </div>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
                 <div className="absolute inset-0 flex justify-center items-center">
-                  <EmptyInbox />
+                  {!isSolved ? (
+                    <EmptyInbox />
+                  ) : (
+                    <>
+                      {isUnlocked ? (
+                        <>
+                          <p className="text-7xl font-bold">
+                            🎉 Happy Birthday! 🎉
+                          </p>
+                          <Confetti />
+                        </>
+                      ) : (
+                        <div className="flex gap-4 items-center">
+                          {digits.map((d, idx) => (
+                            <Keycode
+                              key={idx}
+                              value={d}
+                              onChange={(v) => updateDigit(v, idx)}
+                            />
+                          ))}
+                          <button
+                            className="bg-teal-600 text-white p-2 rounded-md"
+                            onClick={checkSolution}
+                          >
+                            OK
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
-              {emails.length === 0 && isSolved && (
-                <div className="absolute inset-0 flex justify-center items-center text-5xl">
-                  🎉
-                </div>
-              )}
-            </ul>
+            </div>
           </div>
           {email && (
             <div
